@@ -20,11 +20,16 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.neio.filesystem.Directory;
+import com.github.neio.filesystem.exception.PathException;
 
 /**
  * Unit tests for testing {@link DirectoryPath}
@@ -35,6 +40,7 @@ public class TestDirectoryPath
 {
    private static File testDir;
    
+   @BeforeClass
    public static void beforeClass()
    {
       testDir=new File("./testTempDir/");
@@ -45,17 +51,48 @@ public class TestDirectoryPath
       FileUtils.forceMkdir(testDir);
    }
    @Test
-   public void testPath()
+   public void test_directorySuccessfullyInstantiated()
    {
-      Directory directory=new DirectoryPath("./testTempDir/");
+      new DirectoryPath("./testTempDir");
+   }
+   @Test(expected=PathException.class)
+   public void test_directoryExists_ButWasFile() throws IOException
+   {
+      FileUtils.touch(new File(testDir, "tempFile"));
       
+      new DirectoryPath("./testTempDir/tempFile");
+   }
+   @Test
+   public void testPathEquals()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path/");
       
+      Assert.assertTrue("Test path was not equal", FilenameUtils.equalsNormalizedOnSystem("./testTempDir/path/", directory.getPath()));
+   }
+   @Test
+   public void test_getPath_returnsNormalized()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path/");
+      
+      Assert.assertEquals("testTempDir" + File.separator + "path" + File.separator, directory.getPath());
+   }
+   @Test
+   public void test_mkDir()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path/");
+      
+      Assert.assertFalse(new File(testDir, "path/").exists());
+      
+      directory.mkdir();
+      
+      Assert.assertTrue(new File(testDir, "path/").exists());
    }
    @After
    public void after() throws IOException
    {
       FileUtils.cleanDirectory(testDir);
    }
+   @AfterClass
    public static void afterClass()
    {
       try

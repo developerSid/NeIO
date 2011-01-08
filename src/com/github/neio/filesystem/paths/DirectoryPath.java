@@ -17,8 +17,14 @@
 package com.github.neio.filesystem.paths;
 
 import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
 
 import com.github.neio.filesystem.Directory;
+import com.github.neio.filesystem.exception.FilesystemException;
 import com.github.neio.filesystem.exception.PathException;
 
 /**
@@ -36,48 +42,48 @@ public class DirectoryPath extends AbstractPath<Directory> implements Directory
     */
    public DirectoryPath(String directory) throws PathException
    {
-      super(directory);
-   }
-   @Override
-   protected void checkType(File path) throws PathException
-   {
-      if(path.isDirectory() == false)
+      super(FilenameUtils.normalizeNoEndSeparator(directory) + File.separator, Directory.class);
+      File dir=new File(super.path);
+      
+      if(dir.exists() == true)
       {
-         throw new PathException("[" + path.getPath() + "] was not a directory");
+         if(dir.isDirectory() == false)
+         {
+            throw new PathException("[" + directory + "] is not a directory");
+         }
       }
    }
    @Override
    protected int howDoICompare(Directory path)
    {
-      if(path instanceof DirectoryPath)
-      {
-         return super.file.compareTo(((DirectoryPath)path).file);
-      }
-      else
-      {
-         return super.file.compareTo(new File(path.getPath()));
-      }
+      return super.path.compareTo(FilenameUtils.normalizeNoEndSeparator(path.getPath())); 
    }
    @Override
    protected boolean amIEqual(Directory path)
    {
-      if(path instanceof DirectoryPath)
-      {
-         return super.file.equals(((DirectoryPath)path).file);
-      }
-      else
-      {
-         return super.file.equals(new File(path.getPath()));
-      }
+      return FilenameUtils.equals(super.path, path.getPath(), true, IOCase.SYSTEM);
    }
    @Override
    protected int hashMe()
    {
-      return super.file.hashCode();
+      return super.path.hashCode();
    }
    @Override
    protected String stringify()
    {
-      return super.getPath();
+      return super.path;
+   }
+   
+   @Override
+   public void mkdir() throws FilesystemException
+   {
+      try
+      {
+         FileUtils.forceMkdir(new File(super.getPath()));
+      }
+      catch(IOException e)
+      {
+         throw new FilesystemException("Unable to make directory [" + super.getPath() + "]", e);
+      }
    }
 }

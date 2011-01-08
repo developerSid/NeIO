@@ -16,7 +16,14 @@
  */
 package com.github.neio.filesystem.paths;
 
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+
 import com.github.neio.filesystem.File;
+import com.github.neio.filesystem.exception.FilesystemException;
 import com.github.neio.filesystem.exception.PathException;
 
 /**
@@ -33,48 +40,45 @@ public class FilePath extends AbstractPath<File> implements File
     */
    public FilePath(String path) throws PathException
    {
-      super(path);
-   }
-   @Override
-   protected void checkType(java.io.File path) throws PathException
-   {
-      if(path.isFile() == false)
-      {
-         throw new PathException("[" + path.getPath() + "] is not a file");
-      }
+      super(FilenameUtils.normalizeNoEndSeparator(path), File.class);
    }
    @Override
    protected int howDoICompare(File path)
    {
-      if(path instanceof FilePath)
-      {
-         return super.file.compareTo(((FilePath)path).file);
-      }
-      else
-      {
-         return super.file.compareTo(new java.io.File(path.getPath()));
-      }
+      return super.path.compareTo(FilenameUtils.normalizeNoEndSeparator(path.getPath())); 
    }
    @Override
    protected boolean amIEqual(File path)
    {
-      if(path instanceof FilePath)
-      {
-         return super.file.equals(((FilePath)path).file);
-      }
-      else
-      {
-         return super.file.equals(new java.io.File(path.getPath()));
-      }
+      return FilenameUtils.equals(super.path, path.getPath(), true, IOCase.SYSTEM);
    }
    @Override
    protected int hashMe()
    {
-      return super.file.hashCode();
+      //TODO change to do SHA1 hash of the file's contents
+      return super.path.hashCode();
    }
    @Override
    protected String stringify()
    {
       return super.getPath();
+   }
+   
+   @Override
+   public void touch() throws FilesystemException
+   {
+      try
+      {
+         FileUtils.touch(new java.io.File(super.getPath()));
+      }
+      catch(IOException e)
+      {
+         throw new FilesystemException("Unable to touch file [" + super.getPath() + "]", e);
+      }
+   }
+   @Override
+   public long size()
+   {
+      return new java.io.File(super.path).length();
    }
 }

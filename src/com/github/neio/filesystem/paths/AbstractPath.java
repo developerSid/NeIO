@@ -30,35 +30,31 @@ import com.github.neio.filesystem.exception.PathException;
 abstract class AbstractPath<P extends Path> implements Path
 {
    private static final long serialVersionUID=-5023729396774232536L;
-   protected File file;
+   protected String path;
    private Class<P> clazz;
    
    private String stringifyResult=null;
    private Integer hashMeResult=null;
    
-   protected abstract void checkType(File path) throws PathException;
    protected abstract String stringify();
    protected abstract int hashMe();
    protected abstract int howDoICompare(P path);
    protected abstract boolean amIEqual(P path);
    
-   AbstractPath(String path) throws PathException
+   AbstractPath(String path, Class<P> clazz) throws PathException
    {
-      checkType(file);
-   }
-   AbstractPath(String parent, String path)
-   {
-      this(parent.charAt(parent.length()-1) == File.pathSeparatorChar ? parent + path : parent + File.pathSeparator + path);
+      this.path=path;
+      this.clazz=clazz;
    }
    @Override
    public String getPath()
    {
-      return file.getPath();
+      return path;
    }
    @Override
    public boolean exists()
    {
-      return file.exists();
+      return new File(path).exists();
    }
    @SuppressWarnings("unchecked")
    @Override

@@ -16,6 +16,8 @@
  */
 package com.github.neio.filesystem;
 
+import com.github.neio.filesystem.exception.FilesystemException;
+
 /**
  * This is just a marker interface for differentiating {@link Path} implementation as a directory on the file system.
  * @author developer.sid@gmail.com
@@ -23,5 +25,9 @@ package com.github.neio.filesystem;
  */
 public interface Directory extends Path
 {
-
+   /**
+    * Will create the directory pointed at by {@link Directory} implementation as well as any parent directories that don't already exist
+    * @throws FilesystemException if the directory(s) are unable to be made
+    */
+   public void mkdir() throws FilesystemException;
 }

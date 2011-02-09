@@ -1,5 +1,8 @@
 package com.github.neio.filesystem;
 
+import java.math.BigInteger;
+
+import com.github.neio.exception.NeIOException;
 import com.github.neio.filesystem.exception.FilesystemException;
 
 /**
@@ -23,8 +26,16 @@ public interface File extends Path
     */
    public long size();
    /**
-    * All implementations of the {@link File} interface should return the SHA1 hash of their contents.
-    * @return SHA1 hash of the files contents
+    * All implementations of the {@link File} will return the hash their contents.  However due to the limitations of the Java 32 bit integer its uniqueness will not be as good
+    * @return hash of the files contents
     */
    public int hashCode();
+   /**
+    * This will return the more unique hash of a file based off the sha-1 hash calculation of the files contents. Probably completely worthless.
+    * <br/>
+    * Caution this method on all implementations will probably have to recalculate the hash every time so performance of this could get really slow.
+    * @return {@link BigInteger} that is the sha-1 hash of the contents of the file
+    * @throws FilesystemException if there is an error during sha-1 calculation
+    */
+   public BigInteger sha1Hash() throws NeIOException, FilesystemException;
 }

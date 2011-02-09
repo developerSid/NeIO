@@ -19,7 +19,6 @@
 	<dependencies>
 		<dependency org="commons-lang" name="commons-lang" rev="2.5" conf="default->default" />
 		<dependency org="commons-io" name="commons-io" rev="2.0.1" conf="default->default" />
-		<dependency org="commons-collections" name="commons-collections" rev="3.2.1" conf="default->default" />
 		
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" conf="default->default" />
 		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1" conf="test->compile" />

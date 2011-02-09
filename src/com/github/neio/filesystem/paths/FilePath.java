@@ -16,12 +16,22 @@
  */
 package com.github.neio.filesystem.paths;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.AutoCloseInputStream;
+import org.apache.commons.io.output.NullOutputStream;
 
+import com.github.neio.exception.NeIOException;
 import com.github.neio.filesystem.File;
 import com.github.neio.filesystem.exception.FilesystemException;
 import com.github.neio.filesystem.exception.PathException;
@@ -55,8 +65,7 @@ public class FilePath extends AbstractPath<File> implements File
    @Override
    protected int hashMe()
    {
-      //TODO change to do SHA1 hash of the file's contents
-      return super.path.hashCode();
+      return sha1Hash().hashCode();
    }
    @Override
    protected String stringify()
@@ -80,5 +89,31 @@ public class FilePath extends AbstractPath<File> implements File
    public long size()
    {
       return new java.io.File(super.path).length();
+   }
+   @Override
+   public BigInteger sha1Hash() throws NeIOException, FilesystemException
+   {
+      try
+      {
+         MessageDigest hash=MessageDigest.getInstance("SHA1");
+         DigestOutputStream digestOutputStream=new DigestOutputStream(new NullOutputStream(), hash);
+         
+         IOUtils.copy(new AutoCloseInputStream(new FileInputStream(new java.io.File(super.path))), digestOutputStream);
+         
+         
+         return new BigInteger(hash.digest());
+      }
+      catch(NoSuchAlgorithmException e)
+      {
+         throw new FilesystemException("Unable calculate hash due to SHA1 Algorithm not being found", e);
+      }
+      catch(FileNotFoundException e)
+      {
+         throw new FilesystemException("File pointed at by this path [" + super.path + "] does not exist", e);
+      }
+      catch(IOException e)
+      {
+         throw new NeIOException(e);
+      }
    }
 }

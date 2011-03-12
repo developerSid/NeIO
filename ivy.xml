@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ivy-module version="1.0">
-	<info organisation="com.github.neoio" module="NeoIO2" />
+	<info organisation="com.github.neoio" module="NeIO" />
 
 	<configurations>
 		<conf name="default" visibility="public" extends="master"/>
@@ -11,9 +11,9 @@
 	</configurations>
 
 	<publications>
-		<artifact name="NeoIO2" type="jar" ext="jar" conf="master" />
-		<artifact name="NeoIO2" type="jar" ext="dbg.jar" conf="debug" />
-		<artifact name="NeoIO2" type="source" ext="src.jar" conf="sources" />
+		<artifact name="NeIO" type="jar" ext="jar" conf="master" />
+		<artifact name="NeIO" type="jar" ext="dbg.jar" conf="debug" />
+		<artifact name="NeIO" type="source" ext="src.jar" conf="sources" />
 	</publications>
 
 	<dependencies>

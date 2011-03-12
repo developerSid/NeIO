@@ -14,29 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.neio.filesystem;
-
-import java.io.Serializable;
+package com.github.neio.filesystem.paths;
 
 /**
  * @author developer.sid@gmail.com
  *
- * A simple abstraction for paths to files and directories on a filesystem.
  */
-public interface Path extends Serializable, Comparable<Path>
+public class TestFilePath
 {
-   /**
-    * @return String representing the path representation that was used to create this {@link Path} instance 
-    */
-   public String getPath();
-   /**
-    * Check if the {@link Path} instance actually points at a real object on the file system
-    * @return true if path exists on filesystem false otherwise
-    */
-   public boolean exists();
-   /**
-    * All {@link Path} implementations should override {@link Object} toString method and return the same thing as getPath()
-    * @return String representing the path representation that was used to create this {@link Path} instance
-    */
-   public String toString();
+
 }

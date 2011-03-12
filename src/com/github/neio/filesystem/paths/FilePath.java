@@ -100,7 +100,6 @@ public class FilePath extends AbstractPath<File> implements File
          
          IOUtils.copy(new AutoCloseInputStream(new FileInputStream(new java.io.File(super.path))), digestOutputStream);
          
-         
          return new BigInteger(hash.digest());
       }
       catch(NoSuchAlgorithmException e)

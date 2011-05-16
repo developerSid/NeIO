@@ -23,7 +23,7 @@ import com.github.neio.filesystem.exception.FilesystemException;
  * @author developer.sid@gmail.com
  *
  */
-public interface Directory extends Path
+public interface Directory extends Path, Iterable<Path>
 {
    /**
     * Will create the directory pointed at by {@link Directory} implementation as well as any parent directories that don't already exist

@@ -18,12 +18,14 @@ package com.github.neio.filesystem.paths;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 
 import com.github.neio.filesystem.Directory;
+import com.github.neio.filesystem.Path;
 import com.github.neio.filesystem.exception.FilesystemException;
 import com.github.neio.filesystem.exception.PathException;
 
@@ -34,7 +36,8 @@ import com.github.neio.filesystem.exception.PathException;
 public class DirectoryPath extends AbstractPath<Directory> implements Directory
 {
    private static final long serialVersionUID=-4337087049736460729L;
-
+   private File platformDirectory;
+   
    /**
     * Construct a directory based off of a file system path
     * @param directory the directory to be constructed
@@ -43,11 +46,11 @@ public class DirectoryPath extends AbstractPath<Directory> implements Directory
    public DirectoryPath(String directory) throws PathException
    {
       super(FilenameUtils.normalizeNoEndSeparator(directory) + File.separator, Directory.class);
-      File dir=new File(super.path);
+      this.platformDirectory=new File(super.path);
       
-      if(dir.exists() == true)
+      if(platformDirectory.exists() == true)
       {
-         if(dir.isDirectory() == false)
+         if(platformDirectory.isDirectory() == false)
          {
             throw new PathException("[" + directory + "] is not a directory");
          }
@@ -79,11 +82,16 @@ public class DirectoryPath extends AbstractPath<Directory> implements Directory
    {
       try
       {
-         FileUtils.forceMkdir(new File(super.getPath()));
+         FileUtils.forceMkdir(platformDirectory);
       }
       catch(IOException e)
       {
          throw new FilesystemException("Unable to make directory [" + super.getPath() + "]", e);
       }
+   }
+   @Override
+   public Iterator<Path> iterator()
+   {
+      return new PathIterator(platformDirectory);
    }
 }

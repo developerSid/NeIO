@@ -37,20 +37,36 @@ import com.github.neio.filesystem.exception.FilesystemException;
 import com.github.neio.filesystem.exception.PathException;
 
 /**
+ * Represents and abstract path that is a physical file on the filesystem, not a directory.
+ * <br />
+ * <br />
+ * Caution when using the hash methods since the contents of the file will be used to calculate the hash value of the file that is pointed at.
  * @author developer.sid@gmail.com
  *
  */
 public class FilePath extends AbstractPath<File> implements File
 {
    private static final long serialVersionUID=8774985562843285911L;
+   private java.io.File platformFile;
    
    /**
-    * @param path
-    * @throws PathException
+    * @param file the path to the file that is to be pointed at by this path
+    * @throws PathException If the path exists, but is not a file then an exception will be thrown.
     */
-   public FilePath(String path) throws PathException
+   public FilePath(String file) throws PathException
    {
-      super(FilenameUtils.normalizeNoEndSeparator(path), File.class);
+      super(FilenameUtils.normalizeNoEndSeparator(file), File.class);
+      java.io.File tempFile=new java.io.File(file);
+      
+      if(tempFile.exists() == true)
+      {
+         if(tempFile.isFile() == false)
+         {
+            throw new PathException("[" + file + "] is not a file");
+         }
+      }
+      
+      this.platformFile=tempFile;
    }
    @Override
    protected int howDoICompare(File path)
@@ -70,7 +86,7 @@ public class FilePath extends AbstractPath<File> implements File
    @Override
    protected String stringify()
    {
-      return super.getPath();
+      return super.path;
    }
    
    @Override
@@ -78,7 +94,7 @@ public class FilePath extends AbstractPath<File> implements File
    {
       try
       {
-         FileUtils.touch(new java.io.File(super.getPath()));
+         FileUtils.touch(platformFile);
       }
       catch(IOException e)
       {
@@ -88,7 +104,7 @@ public class FilePath extends AbstractPath<File> implements File
    @Override
    public long size()
    {
-      return new java.io.File(super.path).length();
+      return platformFile.length();
    }
    @Override
    public BigInteger sha1Hash() throws NeIOException, FilesystemException
@@ -104,7 +120,7 @@ public class FilePath extends AbstractPath<File> implements File
       }
       catch(NoSuchAlgorithmException e)
       {
-         throw new FilesystemException("Unable calculate hash due to SHA1 Algorithm not being found", e);
+         throw new NeIOException("Unable calculate hash due to SHA1 Algorithm not being found", e);
       }
       catch(FileNotFoundException e)
       {

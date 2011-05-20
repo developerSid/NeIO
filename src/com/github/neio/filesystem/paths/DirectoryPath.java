@@ -59,7 +59,7 @@ public class DirectoryPath extends AbstractPath<Directory> implements Directory
    @Override
    protected int howDoICompare(Directory path)
    {
-      return super.path.compareTo(FilenameUtils.normalizeNoEndSeparator(path.getPath())); 
+      return super.path.compareTo(path.getPath()); 
    }
    @Override
    protected boolean amIEqual(Directory path)
@@ -92,6 +92,13 @@ public class DirectoryPath extends AbstractPath<Directory> implements Directory
    @Override
    public Iterator<Path> iterator()
    {
-      return new PathIterator(platformDirectory);
+      if(platformDirectory.exists() == true)
+      {
+         return new PathIterator(platformDirectory);
+      }
+      else
+      {
+         return new EmptyPathIterator();
+      }
    }
 }

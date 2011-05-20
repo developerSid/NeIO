@@ -87,6 +87,74 @@ public class TestDirectoryPath
       
       Assert.assertTrue(new File(testDir, "path/").exists());
    }
+   @Test
+   public void test_compareTo_lessThan()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path1");
+      
+      Assert.assertTrue(directory.compareTo(new DirectoryPath("./testTempDir/path2")) < 0);
+   }
+   @Test
+   public void test_compareTo_greaterThan()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path2");
+      
+      Assert.assertTrue(directory.compareTo(new DirectoryPath("./testTempDir/path1")) > 0);
+   }
+   @Test
+   public void test_CompareTo_equals()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path1");
+      
+      Assert.assertTrue(directory.compareTo(new DirectoryPath("./testTempDir/path1")) == 0);
+   }
+   @Test(expected=NullPointerException.class)
+   public void test_CompareTo_CannotBeNull()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path1");
+      
+      directory.compareTo(null);
+   }
+   @Test(expected=ClassCastException.class)
+   public void test_CompareTo_NotDirectory()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path1");
+      
+      directory.compareTo(new FilePath("./testTempDir/path1"));
+   }
+   @Test
+   public void test_Equals_false()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path2");
+      
+      Assert.assertFalse(directory.equals(new DirectoryPath("./testTempDir/path1")));
+   }
+   @Test
+   public void test_Equals_true()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path1");
+      
+      Assert.assertTrue(directory.equals(new DirectoryPath("./testTempDir/path1")));
+   }
+   @Test
+   public void test_Equals_falseCausedByNull()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path2");
+      
+      Assert.assertFalse(directory.equals(null));
+   }
+   @Test
+   public void test_Equals_falseCausedByWrongClass()
+   {
+      Directory directory=new DirectoryPath("./testTempDir/path2");
+      
+      Assert.assertFalse(directory.equals(new FilePath("./testTempDir/path1")));
+   }
+   @Test
+   public void test_Path_Iterator()
+   {
+      Assert.fail("Not implemented");
+   }
    @After
    public void after() throws IOException
    {

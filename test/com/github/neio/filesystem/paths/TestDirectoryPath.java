@@ -18,6 +18,7 @@ package com.github.neio.filesystem.paths;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -29,6 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.neio.filesystem.Directory;
+import com.github.neio.filesystem.Path;
 import com.github.neio.filesystem.exception.PathException;
 
 /**
@@ -151,9 +153,19 @@ public class TestDirectoryPath
       Assert.assertFalse(directory.equals(new FilePath("./testTempDir/path1")));
    }
    @Test
-   public void test_Path_Iterator()
+   public void test_Path_Iterator() throws IOException
    {
-      Assert.fail("Not implemented");
+      Directory directory=new DirectoryPath("./testTempDir");
+      
+      FileUtils.forceMkdir(new File("./testTempDir/path1"));
+      
+      Iterator<Path> iterator=directory.iterator();
+      
+      Assert.assertTrue(iterator.hasNext());
+      Path path1=iterator.next();
+      
+      Assert.assertTrue(path1 instanceof Directory);
+      Assert.assertEquals("./testTempDir/path1", path1.getPath());
    }
    @After
    public void after() throws IOException

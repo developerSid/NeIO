@@ -158,14 +158,34 @@ public class TestDirectoryPath
       Directory directory=new DirectoryPath("./testTempDir");
       
       FileUtils.forceMkdir(new File("./testTempDir/path1"));
+      FileUtils.touch(new File("./testTempDir/path1/file1"));
       
       Iterator<Path> iterator=directory.iterator();
       
       Assert.assertTrue(iterator.hasNext());
       Path path1=iterator.next();
       
-      Assert.assertTrue(path1 instanceof Directory);
-      Assert.assertEquals("./testTempDir/path1", path1.getPath());
+      Assert.assertTrue(path1 instanceof FilePath);
+      Assert.assertEquals("testTempDir/path1/file1", path1.getPath());
+   }
+   @Test
+   public void test_Non_Existant_Directory()
+   {
+      Directory directory=new DirectoryPath("./dirDoesNotExist");
+      
+      Assert.assertFalse(directory.iterator().hasNext());
+   }
+   @Test
+   public void test_toString()
+   {
+      Assert.assertEquals("testTempDir/", new DirectoryPath("./testTempDir").toString());
+   }
+   @Test
+   public void test_hash_code()
+   {
+      Directory directory=new DirectoryPath("./testTempDir");
+      
+      Assert.assertEquals("testTempDir/".hashCode(), directory.hashCode());
    }
    @After
    public void after() throws IOException

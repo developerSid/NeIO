@@ -12,7 +12,7 @@ liked their implementation so with much ridicule from friends and colleagues I c
 my mine presented the interface in a much cleaner fashion, or at least not abstracting details out as
 far in my opinion.
 
-The rest of the library grew out of the need to do message staging as messages are sent and recieved
+The rest of the library grew out of the need to do message staging as messages are sent and received
 between server and client.
 
 There is an IO staging system that I tried to make as simple as possible.  I don't know how useful something
@@ -22,4 +22,8 @@ The IO staging spawned a new abstraction of the lower level java.io.File system 
 instead of class based.
 
 The File system abstraction spawned a new Stream system since the java.io.* streams would no longer
-work easily with the File system abstraction.
+work easily with the File system abstraction.  All just extend the appropriate streams and add a new constructor
+that will work with the paths.
+
+Note:  This project makes heavy use of the Apache Commons IO project.  At some point in the future I will try 
+and update the code to use it's own implementations of the facilities used from Apache Commons IO. 

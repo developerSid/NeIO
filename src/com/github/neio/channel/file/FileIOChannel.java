@@ -35,15 +35,15 @@ import com.github.neio.filesystem.paths.FilePath;
  */
 public class FileIOChannel implements IOChannel
 {
-   private FileChannel underlyingImplementation;
    private FilePath file;
+   private FileChannel underlyingImplementation;
    
    public FileIOChannel(FilePath file) throws ChannelException
    {
       try
       {
-         this.underlyingImplementation=new RandomAccessFile(file.getPath(), "rw").getChannel();
          this.file=file;
+         this.underlyingImplementation=new RandomAccessFile(file.getPath(), "rw").getChannel();
       }
       catch(FileNotFoundException e)
       {
@@ -72,6 +72,7 @@ public class FileIOChannel implements IOChannel
    {
       try
       {
+         buffer.flip();
          return underlyingImplementation.write(buffer);
       }
       catch(IOException e)
@@ -84,7 +85,11 @@ public class FileIOChannel implements IOChannel
    {
       try
       {
-         return underlyingImplementation.read(buffer);
+         int bytesRead=underlyingImplementation.read(buffer);
+         
+         buffer.flip();
+         
+         return bytesRead;
       }
       catch(IOException e)
       {
@@ -129,19 +134,6 @@ public class FileIOChannel implements IOChannel
       }
    }
    @Override
-   public long transferTo(WritableByteChannel target) throws ChannelException
-   {
-      try
-      {
-         return underlyingImplementation.transferTo(underlyingImplementation.position(), underlyingImplementation.size()-underlyingImplementation.position(), target);
-      }
-      catch(IOException e)
-      {
-         throw new ChannelException("Unable to transfer bytes from " + file.getPath(), e);
-      }
-   }
-
-   @Override
    public long transferTo(long position, long count, WritableByteChannel target) throws ChannelException
    {
       try
@@ -154,13 +146,15 @@ public class FileIOChannel implements IOChannel
       }
    }
    @Override
-   public long transferFrom(ReadableByteChannel src) throws ChannelException
-   {
-      return 0;
-   }
-   @Override
    public long transferFrom(ReadableByteChannel src, long position, long count) throws ChannelException
    {
-      return 0;
+      try
+      {
+         return underlyingImplementation.transferFrom(src, position, count);
+      }
+      catch(IOException e)
+      {
+         throw new ChannelException("Unable to transfer bytes from source to " + file.getPath());
+      }
    }
 }

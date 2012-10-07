@@ -103,6 +103,46 @@ public class TestFilePath
       
       Assert.assertEquals(new BigInteger("a4d55a8d778e5022fab701977c5d840bbc486d0", 16).hashCode(), new FilePath("./testTempDir/testFile").hashCode());
    }
+   @Test
+   public void testCompareTo_Equals() throws IOException
+   {
+      FileUtils.writeStringToFile(new File(testDir, "testFile1"), "Hello World");
+      FileUtils.writeStringToFile(new File(testDir, "testFile2"), "Hello World");
+      
+      Assert.assertEquals(0, new FilePath("./testTempDir/testFile1").compareTo(new FilePath("./testTempDir/testFile2")));
+   }
+   @Test
+   public void testCompareTo_Greater() throws IOException
+   {
+      FileUtils.writeStringToFile(new File(testDir, "testFile1"), "Hello World");
+      FileUtils.writeStringToFile(new File(testDir, "testFile2"), "Hello World1");
+      
+      Assert.assertEquals(1, new FilePath("./testTempDir/testFile1").compareTo(new FilePath("./testTempDir/testFile2")));
+   }
+   @Test
+   public void testCompareTo_Lesser() throws IOException
+   {
+      FileUtils.writeStringToFile(new File(testDir, "testFile1"), "Hello World1");
+      FileUtils.writeStringToFile(new File(testDir, "testFile2"), "Hello World");
+      
+      Assert.assertEquals(-1, new FilePath("./testTempDir/testFile1").compareTo(new FilePath("./testTempDir/testFile2")));
+   }
+   @Test
+   public void testEquals_True() throws IOException
+   {
+      FileUtils.writeStringToFile(new File(testDir, "testFile1"), "Hello World");
+      FileUtils.writeStringToFile(new File(testDir, "testFile2"), "Hello World");
+      
+      Assert.assertTrue(new FilePath("./testTempDir/testFile1").equals(new FilePath("./testTempDir/testFile2")));
+   }
+   @Test
+   public void testEquals_False() throws IOException
+   {
+      FileUtils.writeStringToFile(new File(testDir, "testFile1"), "Hello World");
+      FileUtils.writeStringToFile(new File(testDir, "testFile2"), "Hello World false");
+      
+      Assert.assertFalse(new FilePath("./testTempDir/testFile1").equals(new FilePath("./testTempDir/testFile2")));
+   }
    @After
    public void after() throws IOException
    {

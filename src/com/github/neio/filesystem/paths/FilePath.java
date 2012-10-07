@@ -26,7 +26,6 @@ import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.AutoCloseInputStream;
 import org.apache.commons.io.output.NullOutputStream;
@@ -40,7 +39,8 @@ import com.github.neio.filesystem.exception.PathException;
  * Represents and abstract path that is a physical file on the filesystem, not a directory.
  * <br />
  * <br />
- * Caution when using the hash methods since the contents of the file will be used to calculate the hash value of the file that is pointed at.
+ * Caution when using the hash methods since the contents of the file will be used to calculate the hash value of the file that is pointed at.  As part of that the
+ * comparison and equals methods also compare the contents of the file based off of the SHA1 hash.
  * @author developer.sid@gmail.com
  *
  */
@@ -68,15 +68,16 @@ public class FilePath extends AbstractPath<File> implements File
       
       this.platformFile=tempFile;
    }
+   
    @Override
    protected int howDoICompare(File path)
    {
-      return super.path.compareTo(FilenameUtils.normalizeNoEndSeparator(path.getPath())); 
+      return sha1Hash().compareTo(path.sha1Hash());
    }
    @Override
    protected boolean amIEqual(File path)
    {
-      return FilenameUtils.equals(super.path, path.getPath(), true, IOCase.SYSTEM);
+      return compareTo(path) == 0;
    }
    @Override
    protected int hashMe()

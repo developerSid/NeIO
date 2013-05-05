@@ -56,6 +56,8 @@ public class TestFileIOChannel
       IOChannel channel=new FileIOChannel(new FilePath("./testTempDir/file1"));
       
       Assert.assertTrue(channel.isOpen());
+      
+      channel.close();
    }
    @Test
    public void test_file_is_closed()
@@ -116,6 +118,8 @@ public class TestFileIOChannel
       channel.write(buffer);
       
       Assert.assertEquals(11, channel.size());
+      
+      channel.close();
    }
    @Test
    public void test_clear()
@@ -131,6 +135,8 @@ public class TestFileIOChannel
       channel.clear();
       
       Assert.assertEquals(0, channel.size());
+      
+      channel.close();
    }
    @Test
    public void test_transferTo() throws IOException
@@ -141,6 +147,9 @@ public class TestFileIOChannel
       
       Assert.assertEquals(11, channelFrom.size());
       Assert.assertEquals(11, channelFrom.transferTo(0, channelFrom.size(), channelTo));
+      
+      channelFrom.close();
+      channelTo.close();
    }
    
    @After

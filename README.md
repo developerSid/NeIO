@@ -11,7 +11,7 @@ between a server and multiple clients with lifetime connections to the server.  
 Netty and Apache Mina I could never get them to do what I wanted which was allow me to send arbitrary
 bytes across a wire in a simple fashion.  It probably comes down to my utter stupidity, but I never
 liked their implementation so with much ridicule from friends and colleagues I created my own that in
-my mine presented the interface in a much cleaner fashion, or at least not abstracting details out as
+my mind presented the interface in a much cleaner fashion, or at least not abstracting details out as
 far in my opinion.
 
 The rest of the library grew out of the need to do message staging as messages are sent and received

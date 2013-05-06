@@ -18,10 +18,7 @@ package com.github.neio.channel.file;
 
 import java.nio.ByteBuffer
 
-import org.apache.commons.io.FileUtils
-import org.junit.Assert
 import org.junit.Rule
-import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
 import spock.lang.Specification
@@ -64,13 +61,13 @@ public class TestFileIOChannel extends Specification
          channel.write(buffer)
          channel.close()
       then:
-         FileUtils.readFileToString(new File(tempDir.getAbsolutePath() + "/temp1")) == "Hello World"
+         new File(tempDir.getAbsolutePath() + "/temp1").text == "Hello World"
    }
    def "test read" ()
    {
       setup:
          File tempDir=testFolder.newFolder()
-         FileUtils.writeStringToFile(new File(tempDir.getAbsolutePath() + "/file1"), "Hello World")
+         new File(tempDir.getAbsolutePath() + "/file1").text="Hello World"
          IOChannel channel=new FileIOChannel(new FilePath(tempDir.getAbsolutePath() + "/file1"))
          ByteBuffer buffer=ByteBuffer.allocate(1024)
       when:

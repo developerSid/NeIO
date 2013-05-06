@@ -12,19 +12,16 @@ configurations {
    all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
 dependencies {
-   groovy 'org.codehaus.groovy:groovy-all:2.0.7'
+   testCompile 'org.codehaus.groovy:groovy-all:2.0.7'
    
    compile 'commons-lang:commons-lang:2.5'
    compile 'commons-io:commons-io:2.0'
    compile 'commons-collections:commons-collections:3.2.1'
       
-   compile 'org.slf4j:slf4j-api:1.7.5'
-   compile 'org.slf4j:slf4j-log4j12:1.7.5'
-   
    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
    testCompile 'junit:junit:4.10'
    testCompile 'cglib:cglib:2.2.2'
 }
 task wrapper(type: Wrapper, description: 'generate gradle wrapper') {
-   gradleVersion = '1.4'
+   gradleVersion = '1.5'
 }

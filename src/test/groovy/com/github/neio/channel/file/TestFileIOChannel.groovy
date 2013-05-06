@@ -129,19 +129,39 @@ public class TestFileIOChannel extends Specification
       cleanup:
          channel.close();
    }
-   def "test transfer" ()
+   def "test transfer to" ()
    {
       setup:
+         def transfered=0
          File fromFile=testFolder.newFile()
          File toFile=testFolder.newFile()
          fromFile.text="Hello World"
-         IOChannel from=new FileIOChannel(new FilePath(fromFile.getAbsolutePath()))
-         IOChannel to=new FileIOChannel(new FilePath(toFile.getAbsolutePath()))
+         FileIOChannel from=new FileIOChannel(new FilePath(fromFile.getAbsolutePath()))
+         FileIOChannel to=new FileIOChannel(new FilePath(toFile.getAbsolutePath()))
       when:
-         def transfered=from.transferTo(0, from.size(), to)
+         transfered=from.transferTo(0, from.size(), to)
       then:
          transfered == 11
          toFile.text == "Hello World"
+      cleanup:
+         from.close()
+         to.close()
+   }
+   def "test transfer from" ()
+   {
+      setup:
+         def transfered=0
+         File fromFile=testFolder.newFile()
+         File toFile=testFolder.newFile()
+         toFile.text="Hello World"
+         FileIOChannel from=new FileIOChannel(new FilePath(fromFile.getAbsolutePath()))
+         FileIOChannel to=new FileIOChannel(new FilePath(toFile.getAbsolutePath()))
+      when:
+         from.clear()
+         transfered=from.transferFrom(to, 0, to.size())
+      then:
+         transfered == 11
+         fromFile.text == "Hello World"
       cleanup:
          from.close()
          to.close()

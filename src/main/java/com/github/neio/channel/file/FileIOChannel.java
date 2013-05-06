@@ -138,7 +138,14 @@ public class FileIOChannel implements IOChannel
    {
       try
       {
-         return underlyingImplementation.transferTo(position, count, target);
+         if(target instanceof FileIOChannel) //the underlying implementation only seems to actually do a copy if the target is a FileChannel
+         {
+            return underlyingImplementation.transferTo(position, count, ((FileIOChannel)target).underlyingImplementation);
+         }
+         else //try just in case it will work
+         {
+            return underlyingImplementation.transferTo(position, count, target);
+         }
       }
       catch(IOException e)
       {
@@ -150,7 +157,14 @@ public class FileIOChannel implements IOChannel
    {
       try
       {
-         return underlyingImplementation.transferFrom(src, position, count);
+         if(src instanceof FileIOChannel) //the underlying implementation only seems to actually do a copy if the src is a FileChannel
+         {
+            return underlyingImplementation.transferFrom(((FileIOChannel)src).underlyingImplementation, position, count);
+         }
+         else  //try just in case it will work
+         {
+            return underlyingImplementation.transferFrom(src, position, count);
+         }
       }
       catch(IOException e)
       {
